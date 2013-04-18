@@ -18,7 +18,7 @@ namespace MemorySuck
             Console.Write("sucking memory until the system is at about {0}% usage ...\r\n", memoryLimit * 100);
 
             var gbArray = new byte[outerSize][];
-            for (int g = 0; g < outerSize; g++)
+            Parallel.For(0, outerSize, (g, loopState) =>
             {
                 var array = new byte[innerSize];
                 for (int i = 0; i < innerSize; i++)
@@ -27,8 +27,8 @@ namespace MemorySuck
                 }
                 gbArray[g] = array;
                 if (PercentMemoryUsed() >= memoryLimit)
-                    break;
-            }
+                    loopState.Break();
+            });
 
             Console.Write("memory sucked - hit any key to close and release memory\r\n");
             Console.Read();
